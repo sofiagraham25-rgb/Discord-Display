@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discord Web Client</title>
+  <style>
+    :root {
+      --bg-darkest: #0b0e14;
+      --bg-server-bar: #11141d;
+      --bg-sidebar: #181c25;
+      --bg-chat: #1f232e;
+      --bg-member-list: #181c25;
+      --bg-card: #282d3b;
+      --accent-blurple: #5865f2;
+      --text-normal: #dbdee1;
+      --text-muted: #80848e;
+      --text-header: #f2f3f5;
+      --text-positive: #23a55a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-darkest);
+      color: var(--text-normal);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      font-size: 14px;
+    }
+
+    /* 1. Server Bar */
+    .server-bar {
+      width: 72px;
+      background-color: var(--bg-server-bar);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0;
+      gap: 8px;
+      overflow-y: auto;
+      border-right: 1px solid var(--bg-darkest);
+    }
+
+    .server-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: var(--text-normal);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .server-icon:hover, .server-icon.active {
+      border-radius: 16px;
+      background-color: var(--accent-blurple);
+      color: #fff;
+    }
+
+    /* 2. Channel Sidebar */
+    .channel-sidebar {
+      width: 240px;
+      background-color: var(--bg-sidebar);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .server-header {
+      height: 48px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text-header);
+      border-bottom: 1px solid var(--bg-darkest);
+    }
+
+    .channels-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 8px;
+    }
+
+    .category-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 16px 0 4px 8px;
+    }
+
+    .channel-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      border-radius: 4px;
+      color: var(--text-muted);
+      cursor: pointer;
+      margin-bottom: 2px;
+    }
+
+    .channel-item:hover, .channel-item.active {
+      background-color: rgba(255, 255, 255, 0.07);
+      color: var(--text-normal);
+    }
+
+    .channel-item.active {
+      color: #fff;
+    }
+
+    .voice-user {
+      margin-left: 20px;
+      font-size: 12px;
+      padding: 2px 6px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .voice-user.speaking {
+      color: var(--text-positive);
+      font-weight: bold;
+    }
+
+    /* User Footer */
+    .user-footer {
+      height: 52px;
+      background-color: var(--bg-server-bar);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: var(--accent-blurple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--text-muted);
+    }
+
+    .status-indicator.online { background-color: var(--text-positive); }
+
+    /* 3. Main Chat View */
+    .chat-area {
+      flex: 1;
+      background-color: var(--bg-chat);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      height: 48px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--bg-darkest);
+      font-weight: 600;
+      color: var(--text-header);
+      gap: 8px;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .msg-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .msg-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .msg-author {
+      font-weight: 600;
+      color: var(--text-header);
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+
+    .msg-text {
+      color: var(--text-normal);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .chat-input-wrapper {
+      padding: 0 16px 24px 16px;
+    }
+
+    .chat-input {
+      width: 100%;
+      background-color: var(--bg-card);
+      border: none;
+      padding: 12px 16px;
+      border-radius: 8px;
+      color: var(--text-normal);
+      outline: none;
+    }
+
+    /* 4. Right Member List */
+    .member-sidebar {
+      width: 240px;
+      background-color: var(--bg-member-list);
+      padding: 16px 8px;
+      overflow-y: auto;
+    }
+
+    .member-category {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 12px 0 4px 8px;
+    }
+
+    .member-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 4px;
+    }
+
+    .connection-banner {
+      background-color: #ed4245;
+      color: white;
+      text-align: center;
+      padding: 4px;
+      font-size: 12px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Far-Left Server Bar -->
+  <div class="server-bar" id="servers-list"></div>
+
+  <!-- Channel Sidebar -->
+  <div class="channel-sidebar">
+    <div>
+      <div class="server-header">
+        <span id="current-server-name">Select Server</span>
+      </div>
+      <div class="channels-container">
+        <div class="category-title">Text Channels</div>
+        <div id="text-channels"></div>
+
+        <div class="category-title">Voice Channels</div>
+        <div id="voice-channels"></div>
+      </div>
+    </div>
+
+    <div class="user-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="user-avatar-btn">M</div>
+        <div style="display: flex; flex-direction: column;">
+          <span class="user-name" style="font-weight: 600; font-size: 13px;" id="user-display-name">Matthew Plays</span>
+          <span style="font-size: 11px; color: var(--text-muted);" id="connection-status">Connecting...</span>
+        </div>
+      </div>
+      <div class="status-indicator" id="status-dot"></div>
+    </div>
+  </div>
+
+  <!-- Central Chat Area -->
+  <div class="chat-area">
+    <div class="connection-banner" id="ws-error-banner">
+      WebSocket Disconnected. Attempting reconnection...
+    </div>
+    
+    <div class="chat-header">
+      <span style="color: var(--text-muted); font-size: 20px;">#</span>
+      <span id="current-channel-name">welcome</span>
+    </div>
+
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg-row">
+        <div class="user-avatar">System</div>
+        <div class="msg-content">
+          <span class="msg-author">System Bot</span>
+          <span class="msg-text">Client UI initialized. Connecting to WebSocket bridge...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-wrapper">
+      <input type="text" class="chat-input" id="chat-input-field" placeholder="Message #welcome" onkeypress="handleKeyPress(event)">
+    </div>
+  </div>
+
+  <!-- Right Member List -->
+  <div class="member-sidebar">
+    <div class="member-category">Online Members</div>
+    <div id="members-list"></div>
+  </div>
+
+  <script>
+  // Replace with your ngrok/WSS URL if you have one, e.g., 'wss://your-ngrok-url.ngrok-free.app'
+  const wsUrl = 'wss://127.0.0.1:4040'; 
+  let socket = null;
+  let activeGuildId = null;
+  let activeChannel = 'welcome';
+
+  function initWebSocket() {
+    try {
+      socket = new WebSocket(wsUrl);
+
+      socket.onopen = () => {
+        document.getElementById('connection-status').innerText = 'Connected';
+        document.getElementById('status-dot').classList.add('online');
+        document.getElementById('ws-error-banner').style.display = 'none';
+        socket.send(JSON.stringify({ type: 'FETCH_SERVERS' }));
+      };
+
+      socket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          handleServerEvent(data);
+        } catch (e) {
+          console.error('Data parsing error:', e);
+        }
+      };
+
+      socket.onclose = () => {
+        handleDisconnect();
+      };
+
+      socket.onerror = () => {
+        handleDisconnect();
+      };
+    } catch (err) {
+      handleDisconnect();
+    }
+  }
+
+  function handleDisconnect() {
+    // Hide the error banner and load demo data so the site works on GitHub Pages
+    document.getElementById('ws-error-banner').style.display = 'none';
+    document.getElementById('connection-status').innerText = 'Demo Mode (Offline)';
+    document.getElementById('status-dot').classList.add('online');
+    
+    // Render mock server & channel data if not connected
+    if (!activeGuildId) {
+      renderServers([{ id: '1', name: 'Sofia and Sharon' }]);
+      renderTextChannels(['welcome', 'general-chat', 'public-media']);
+      renderVoiceChannels([{ name: 'General', members: [{ username: 'Sofag23', isSpeaking: true }] }]);
+    }
+  }
+
+  function handleServerEvent(data) {
+    switch (data.type) {
+      case 'INITIAL_SYNC':
+      case 'SERVER_LIST':
+        renderServers(data.guilds || []);
+        break;
+      case 'VOICE_CHANNELS_LIST':
+        renderVoiceChannels(data.voiceChannels || []);
+        break;
+      case 'MESSAGE_CREATE':
+        appendMessage(data.author, data.content);
+        break;
+    }
+  }
+
+  function renderServers(guilds) {
+    const container = document.getElementById('servers-list');
+    container.innerHTML = guilds.map((guild, idx) => `
+      <div class="server-icon ${idx === 0 ? 'active' : ''}" 
+           onclick="selectServer('${guild.id}', '${guild.name}', this)">
+        ${guild.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+      </div>
+    `).join('');
+
+    if (guilds.length > 0 && !activeGuildId) {
+      selectServer(guilds[0].id, guilds[0].name, container.children[0]);
+    }
+  }
+
+  function selectServer(guildId, guildName, element) {
+    activeGuildId = guildId;
+    document.getElementById('current-server-name').innerText = guildName;
+    
+    document.querySelectorAll('.server-icon').forEach(el => el.classList.remove('active'));
+    if (element) element.classList.add('active');
+
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ type: 'FETCH_VOICE_CHANNELS', guildId }));
+    }
+  }
+
+  function renderTextChannels(channels) {
+    const container = document.getElementById('text-channels');
+    container.innerHTML = channels.map(ch => `
+      <div class="channel-item ${ch === activeChannel ? 'active' : ''}" onclick="selectChannel('${ch}', this)">
+        <span style="color: var(--text-muted)">#</span> ${ch}
+      </div>
+    `).join('');
+  }
+
+  function selectChannel(channelName, el) {
+    activeChannel = channelName;
+    document.getElementById('current-channel-name').innerText = channelName;
+    document.getElementById('chat-input-field').placeholder = `Message #${channelName}`;
+    
+    document.querySelectorAll('#text-channels .channel-item').forEach(e => e.classList.remove('active'));
+    if (el) el.classList.add('active');
+  }
+
+  function renderVoiceChannels(channels) {
+    const container = document.getElementById('voice-channels');
+    container.innerHTML = channels.map(channel => `
+      <div class="channel-item">
+        <span>🔊</span>
+        <span>${channel.name}</span>
+      </div>
+      ${(channel.members || []).map(member => `
+        <div class="voice-user ${member.isSpeaking ? 'speaking' : ''}">
+          <span>🎙️</span> ${member.username}
+        </div>
+      `).join('')}
+    `).join('');
+  }
+
+  function handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      const input = document.getElementById('chat-input-field');
+      const text = input.value.trim();
+      if (text) {
+        appendMessage('Matthew Plays', text);
+        if (socket && socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify({
+            type: 'SEND_MESSAGE',
+            guildId: activeGuildId,
+            channel: activeChannel,
+            content: text
+          }));
+        }
+        input.value = '';
+      }
+    }
+  }
+
+  function appendMessage(author, content) {
+    const chatContainer = document.getElementById('chat-messages');
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'msg-row';
+    msgDiv.innerHTML = `
+      <div class="user-avatar">${author[0].toUpperCase()}</div>
+      <div class="msg-content">
+        <span class="msg-author">${author}</span>
+        <span class="msg-text">${content}</span>
+      </div>
+    `;
+    chatContainer.appendChild(msgDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+
+  initWebSocket();
+</script>
+</body>
+</html>
