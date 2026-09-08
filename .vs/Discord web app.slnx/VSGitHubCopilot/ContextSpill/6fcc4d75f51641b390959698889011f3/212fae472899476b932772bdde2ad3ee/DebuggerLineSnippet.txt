@@ -1,0 +1,254 @@
+﻿FileId: 11
+```razor Components\Pages\DiscordCompanion.razor
+90: 
+91: @code {
+92:     private string? _token;
+93:     private string? _inputToken;
+94:     private string CurrentView = "channels";
+95:     private bool IsLoading = false;
+96: 
+97:     private string? CurrentUserName;
+98:     private string CurrentUserStatus = "offline";
+99: 
+100:     private List<JsonElement> Guilds = new();
+101:     private JsonElement? SelectedGuild;
+102:     private JsonElement? SelectedChannel;
+103:     private List<JsonElement> CurrentMessages = new();
+104: 
+105:     private List<JsonElement> PrivateChannels = new();
+106:     private JsonElement? SelectedDmChannel;
+107: 
+108:     private List<JsonElement> CurrentMembers = new();
+109: 
+110:     private async Task HandleTokenKeyUp(KeyboardEventArgs e)
+111:     {
+112:         if (e.Key == "Enter")
+113:         {
+114:             await AuthenticateAsync();
+115:         }
+116:     }
+117: 
+118:     protected override async Task OnInitializedAsync()
+119:     {
+120:         // Try to load token from localStorage or configuration
+121:         _token = Configuration.GetValue<string>("Discord:BotToken");
+122: 
+123:         if (!string.IsNullOrEmpty(_token))
+124:         {
+125:             await AuthenticateAsync();
+126:         }
+127:     }
+128: 
+129:     private async Task AuthenticateAsync()
+130:     {
+131:         try
+132:         {
+133:             IsLoading = true;
+134: 
+135:             if (string.IsNullOrEmpty(_inputToken))
+136:             {
+137:                 return;
+138:             }
+139: 
+140:             _token = _inputToken;
+141:             DiscordApi.SetToken(_token);
+142: 
+143:             // Validate token
+144:             if (!await DiscordApi.ValidateTokenAsync())
+145:             {
+146:                 _token = null;
+147:                 _inputToken = null;
+148:                 return;
+149:             }
+150: 
+151:             // Load initial data
+152:             await LoadUserAsync();
+153:             await LoadGuildsAsync();
+154:             await LoadPrivateChannelsAsync();
+155: 
+156:             _inputToken = null;
+157:             CurrentView = "channels";
+158:         }
+159:         finally
+160:         {
+161:             IsLoading = false;
+162:         }
+163:     }
+164: 
+165:     private async Task LoadUserAsync()
+166:     {
+167:         try
+168:         {
+169:             var user = await DiscordApi.GetCurrentUserAsync();
+170:             if (user.HasValue)
+171:             {
+172:                 CurrentUserName = user.Value.GetProperty("username").GetString();
+173:                 CurrentUserStatus = "online";
+174:             }
+175:         }
+176:         catch (Exception ex)
+177:         {
+178:             Console.WriteLine($"Error loading user: {ex.Message}");
+179:         }
+180:     }
+181: 
+182:     private async Task LoadGuildsAsync()
+183:     {
+184:         try
+185:         {
+186:             Guilds = await DiscordApi.GetGuildsAsync();
+187:             if (Guilds.Count > 0)
+188:             {
+189:                 await SelectGuildAsync(Guilds[0]);
+190:             }
+191:         }
+192:         catch (Exception ex)
+193:         {
+194:             Console.WriteLine($"Error loading guilds: {ex.Message}");
+195:         }
+196:     }
+197: 
+198:     private async Task SelectGuildAsync(JsonElement guild)
+199:     {
+200:         try
+201:         {
+202:             IsLoading = true;
+203:             SelectedGuild = guild;
+204:             var guildId = guild.GetProperty("id").GetString();
+205: 
+206:             var channels = await DiscordApi.GetGuildChannelsAsync(guildId);
+207: 
+208:             // Filter text channels only (type 0)
+209:             var textChannels = channels.Where(c => 
+210:                 c.GetProperty("type").GetInt32() == 0).ToList();
+211: 
+212:             if (textChannels.Count > 0)
+213:             {
+214:                 await SelectChannelAsync(textChannels[0]);
+215:             }
+216:         }
+217:         finally
+218:         {
+219:             IsLoading = false;
+220:         }
+221:     }
+222: 
+223:     private async Task SelectChannelAsync(JsonElement channel)
+224:     {
+225:         try
+226:         {
+227:             IsLoading = true;
+228:             SelectedChannel = channel;
+229:             var channelId = channel.GetProperty("id").GetString();
+230:             CurrentMessages = await DiscordApi.GetChannelMessagesAsync(channelId);
+231:         }
+232:         finally
+233:         {
+234:             IsLoading = false;
+235:         }
+236:     }
+237: 
+238:     private async Task SelectDmChannelAsync(JsonElement channel)
+239:     {
+240:         try
+241:         {
+242:             IsLoading = true;
+243:             SelectedDmChannel = channel;
+244:             var channelId = channel.GetProperty("id").GetString();
+245:             CurrentMessages = await DiscordApi.GetChannelMessagesAsync(channelId);
+246:         }
+247:         finally
+248:         {
+249:             IsLoading = false;
+250:         }
+251:     }
+252: 
+253:     private async Task LoadPrivateChannelsAsync()
+254:     {
+255:         try
+256:         {
+257:             PrivateChannels = await DiscordApi.GetPrivateChannelsAsync();
+258:         }
+259:         catch (Exception ex)
+260:         {
+261:             Console.WriteLine($"Error loading private channels: {ex.Message}");
+262:         }
+263:     }
+264: 
+265:     private async Task LoadMembersAsync()
+266:     {
+267:         try
+268:         {
+269:             if (SelectedGuild.HasValue)
+270:             {
+271:                 var guildId = SelectedGuild.Value.GetProperty("id").GetString();
+272:                 CurrentMembers = await DiscordApi.GetGuildMembersAsync(guildId);
+273:             }
+274:         }
+275:         catch (Exception ex)
+276:         {
+277:             Console.WriteLine($"Error loading members: {ex.Message}");
+278:         }
+279:     }
+280: 
+281:     private async Task SendMessageAsync(string content)
+282:     {
+283:         try
+284:         {
+285:             string? channelId = null;
+286: 
+287:             if (CurrentView == "channels" && SelectedChannel.HasValue)
+288:             {
+289:                 channelId = SelectedChannel.Value.GetProperty("id").GetString();
+290:             }
+291:             else if (CurrentView == "dms" && SelectedDmChannel.HasValue)
+292:             {
+293:                 channelId = SelectedDmChannel.Value.GetProperty("id").GetString();
+294:             }
+295: 
+296:             if (!string.IsNullOrEmpty(channelId))
+297:             {
+298:                 var success = await DiscordApi.SendMessageAsync(channelId, content);
+299:                 if (success)
+300:                 {
+301:                     // Refresh messages
+302:                     if (CurrentView == "channels" && SelectedChannel.HasValue)
+303:                     {
+304:                         await SelectChannelAsync(SelectedChannel.Value);
+305:                     }
+306:                     else if (CurrentView == "dms" && SelectedDmChannel.HasValue)
+307:                     {
+308:                         await SelectDmChannelAsync(SelectedDmChannel.Value);
+309:                     }
+310:                 }
+311:             }
+312:         }
+313:         catch (Exception ex)
+314:         {
+315:             Console.WriteLine($"Error sending message: {ex.Message}");
+316:         }
+317:     }
+318: 
+319:     private void SetViewAsync(string view)
+320:     {
+321:         CurrentView = view;
+322:         if (view == "friends")
+323:         {
+324:             _ = LoadMembersAsync();
+325:         }
+326:     }
+327: 
+328:     private void DisconnectAsync()
+329:     {
+330:         _token = null;
+331:         _inputToken = null;
+332:         SelectedGuild = null;
+333:         SelectedChannel = null;
+334:         SelectedDmChannel = null;
+335:         CurrentMessages.Clear();
+336:         Guilds.Clear();
+337:         PrivateChannels.Clear();
+338:         CurrentView = "channels";
+339:     }
+340: }
+```

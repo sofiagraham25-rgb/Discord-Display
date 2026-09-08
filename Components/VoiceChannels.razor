@@ -1,0 +1,271 @@
+@using System.Text.Json
+@using Discord_web_app.Services
+
+<div class="voice-channels-container">
+    <div class="voice-list">
+        <h3>Voice Channels</h3>
+        @if (Channels == null || Channels.Count == 0)
+        {
+            <p class="empty-state">No voice channels available</p>
+        }
+        else
+        {
+            <div class="channel-list">
+                @foreach (var channel in Channels)
+                {
+                    var channelId = channel.GetProperty("id").GetString();
+                    var channelName = channel.GetProperty("name").GetString();
+                    var isSelected = channelId == CurrentVoiceChannelId;
+
+                    <div class="channel-item @(isSelected ? "active" : "")" 
+                         @onclick="@(() => OnChannelSelect.InvokeAsync(channel))">
+                        <div class="channel-info">
+                            <span class="channel-name">🎙️ @channelName</span>
+                            @if (isSelected)
+                            {
+                                <span class="connected-badge">● Connected</span>
+                            }
+                        </div>
+                        <button class="join-btn" 
+                                @onclick:stopPropagation
+                                @onclick="@(() => OnVoiceChannelJoin.InvokeAsync((channelId, channelName, !isSelected)))">
+                            @(isSelected ? "Leave" : "Join")
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    @if (!string.IsNullOrEmpty(CurrentVoiceChannelName))
+    {
+        <div class="current-channel-info">
+            <h4>Currently Connected</h4>
+            <div class="info-card">
+                <p><strong>Channel:</strong> @CurrentVoiceChannelName</p>
+
+                <!-- Microphone Toggle -->
+                <div class="microphone-section">
+                    <button class="mic-button @(IsMicOn ? "mic-on" : "mic-off")" 
+                            @onclick="ToggleMicrophone">
+                        @(IsMicOn ? "🎤 Microphone ON" : "🔇 Microphone OFF")
+                    </button>
+                    @if (IsMicOn)
+                    {
+                        <p class="mic-status">Microphone is active - you can speak</p>
+                    }
+                </div>
+
+                @if (VoiceChannelParticipants != null && VoiceChannelParticipants.Count > 0)
+                {
+                    <p><strong>Participants:</strong> @VoiceChannelParticipants.Count</p>
+                    <div class="participants-list">
+                        @foreach (var participant in VoiceChannelParticipants)
+                        {
+                            var username = participant.GetProperty("username").GetString();
+                            <div class="participant">👤 @username</div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<JsonElement>? Channels { get; set; }
+
+    [Parameter]
+    public JsonElement? SelectedChannel { get; set; }
+
+    [Parameter]
+    public string? CurrentVoiceChannelId { get; set; }
+
+    [Parameter]
+    public string? CurrentVoiceChannelName { get; set; }
+
+    [Parameter]
+    public List<JsonElement>? VoiceChannelParticipants { get; set; }
+
+    [Parameter]
+    public EventCallback<JsonElement> OnChannelSelect { get; set; }
+
+    [Parameter]
+    public EventCallback<(string ChannelId, string ChannelName, bool IsJoining)> OnVoiceChannelJoin { get; set; }
+
+    private bool IsMicOn = false;
+
+    private void ToggleMicrophone()
+    {
+        IsMicOn = !IsMicOn;
+        if (IsMicOn)
+        {
+            // Microphone is now ON
+        }
+        else
+        {
+            // Microphone is now OFF
+        }
+    }
+}
+
+<style>
+    .voice-channels-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 15px;
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    .voice-list {
+        flex: 1;
+    }
+
+    .voice-list h3 {
+        margin-top: 0;
+        color: #fff;
+        font-size: 16px;
+    }
+
+    .channel-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .channel-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: #2f3136;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .channel-item:hover {
+        background: #36393f;
+    }
+
+    .channel-item.active {
+        background: #40444b;
+        border-left: 3px solid #7289da;
+    }
+
+    .channel-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+    }
+
+    .channel-name {
+        color: #dcddde;
+        font-weight: 500;
+    }
+
+    .connected-badge {
+        color: #43b581;
+        font-size: 12px;
+    }
+
+    .join-btn {
+        padding: 6px 12px;
+        background: #7289da;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: background-color 0.2s;
+    }
+
+    .join-btn:hover {
+        background: #5a78c4;
+    }
+
+    .empty-state {
+        color: #72767d;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .current-channel-info {
+        padding: 15px;
+        background: #2f3136;
+        border-radius: 8px;
+    }
+
+    .current-channel-info h4 {
+        margin: 0 0 10px 0;
+        color: #fff;
+        font-size: 14px;
+    }
+
+    .info-card {
+        color: #dcddde;
+        font-size: 13px;
+    }
+
+    .info-card p {
+        margin: 5px 0;
+    }
+
+    .participants-list {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+         .participant {
+            color: #b9bbbe;
+            font-size: 12px;
+            padding: 4px 8px;
+            background: #36393f;
+            border-radius: 4px;
+        }
+
+        .microphone-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #36393f;
+        }
+
+        .mic-button {
+            width: 100%;
+            padding: 10px;
+            background: #7289da;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .mic-button:hover {
+            background: #5a78c4;
+        }
+
+        .mic-button.mic-on {
+            background: #43b581;
+        }
+
+        .mic-button.mic-on:hover {
+            background: #3d9b6f;
+        }
+
+        .mic-status {
+            color: #43b581;
+            font-size: 12px;
+            margin: 0;
+            text-align: center;
+        }
+    </style>

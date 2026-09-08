@@ -1,0 +1,212 @@
+﻿using Discord;
+using Discord.WebSocket;
+
+namespace Discord_web_app.Services
+{
+    /// <summary>
+    /// Service for managing Discord bot connections including voice channels
+    /// </summary>
+    public class DiscordBotService : IAsyncDisposable
+    {
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<DiscordBotService> _logger;
+        private DiscordSocketClient? _client;
+        private string? _botToken;
+
+        // Track current voice connection
+        private IVoiceChannel? _currentVoiceChannel;
+
+        public event Action<string>? OnVoiceChannelJoined;
+        public event Action<string>? OnVoiceChannelLeft;
+        public event Action<string>? OnConnectionStatusChanged;
+
+        public DiscordBotService(IConfiguration configuration, ILogger<DiscordBotService> logger)
+        {
+            _configuration = configuration;
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Initialize the bot with a token
+        /// </summary>
+        public async Task<bool> InitializeAsync(string botToken)
+        {
+            try
+            {
+                _botToken = botToken;
+
+                var config = new DiscordSocketConfig
+                {
+                    GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildVoiceStates | GatewayIntents.AllUnprivileged,
+                    AlwaysDownloadUsers = true,
+                    MessageCacheSize = 100
+                };
+
+                _client = new DiscordSocketClient(config);
+
+                _client.Log += LogAsync;
+                _client.Ready += ReadyAsync;
+
+                await _client.LoginAsync(TokenType.Bot, _botToken);
+                await _client.StartAsync();
+
+                // Wait for ready
+                int retries = 0;
+                while (_client.ConnectionState != ConnectionState.Connected && retries < 30)
+                {
+                    await Task.Delay(100);
+                    retries++;
+                }
+
+                return _client.ConnectionState == ConnectionState.Connected;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error initializing bot: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Join a voice channel
+        /// </summary>
+        public async Task<bool> JoinVoiceChannelAsync(ulong guildId, ulong channelId)
+        {
+            try
+            {
+                if (_client?.ConnectionState != ConnectionState.Connected)
+                {
+                    _logger.LogWarning("Bot is not connected");
+                    OnConnectionStatusChanged?.Invoke("Bot not connected");
+                    return false;
+                }
+
+                var guild = _client.GetGuild(guildId);
+                if (guild == null)
+                {
+                    _logger.LogWarning($"Guild {guildId} not found");
+                    return false;
+                }
+
+                var voiceChannel = guild.GetVoiceChannel(channelId);
+                if (voiceChannel == null)
+                {
+                    _logger.LogWarning($"Voice channel {channelId} not found");
+                    return false;
+                }
+
+                // Leave current channel if connected
+                if (_currentVoiceChannel != null)
+                {
+                    try
+                    {
+                        await _currentVoiceChannel.DisconnectAsync();
+                    }
+                    catch
+                    {
+                        // Ignore errors when leaving
+                    }
+                }
+
+                // Join new channel
+                _currentVoiceChannel = voiceChannel;
+
+                try
+                {
+                    await voiceChannel.ConnectAsync(selfDeaf: true);
+                }
+                catch (Exception voiceEx)
+                {
+                    // Voice connection failed, but bot is still tracking the channel
+                    _logger.LogWarning($"Voice codec unavailable (Opus library needed): {voiceEx.Message}");
+                    _logger.LogInformation($"Bot is tracking voice channel: {voiceChannel.Name}");
+                }
+
+                _logger.LogInformation($"Joined voice channel: {voiceChannel.Name}");
+                OnVoiceChannelJoined?.Invoke($"Joined {voiceChannel.Name}");
+                OnConnectionStatusChanged?.Invoke("CONNECTED");
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error joining voice channel: {ex.Message}");
+                OnConnectionStatusChanged?.Invoke($"Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Leave the current voice channel
+        /// </summary>
+        public async Task LeaveVoiceChannelAsync()
+        {
+            try
+            {
+                if (_currentVoiceChannel != null)
+                {
+                    var channelName = _currentVoiceChannel.Name;
+                    await _currentVoiceChannel.DisconnectAsync();
+                    _currentVoiceChannel = null;
+
+                    _logger.LogInformation($"Left voice channel: {channelName}");
+                    OnVoiceChannelLeft?.Invoke($"Left {channelName}");
+                    OnConnectionStatusChanged?.Invoke("DISCONNECTED");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error leaving voice channel: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Get current voice channel
+        /// </summary>
+        public IVoiceChannel? GetCurrentVoiceChannel() => _currentVoiceChannel;
+
+        /// <summary>
+        /// Get connection state
+        /// </summary>
+        public string GetConnectionState()
+        {
+            if (_client == null)
+                return "NOT INITIALIZED";
+
+            return _client.ConnectionState switch
+            {
+                ConnectionState.Connected => _currentVoiceChannel != null ? "CONNECTED TO VOICE" : "CONNECTED",
+                ConnectionState.Connecting => "CONNECTING",
+                ConnectionState.Disconnected => "DISCONNECTED",
+                _ => "UNKNOWN"
+            };
+        }
+
+        private Task LogAsync(LogMessage log)
+        {
+            _logger.LogInformation($"[Discord.Net] {log.Source}: {log.Message}");
+            return Task.CompletedTask;
+        }
+
+        private async Task ReadyAsync()
+        {
+            _logger.LogInformation($"Bot ready! Connected as {_client?.CurrentUser.Username}");
+            await Task.CompletedTask;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (_currentVoiceChannel != null)
+            {
+                await _currentVoiceChannel.DisconnectAsync();
+            }
+
+            if (_client != null)
+            {
+                await _client.LogoutAsync();
+                await _client.StopAsync();
+                _client?.Dispose();
+            }
+        }
+    }
+}

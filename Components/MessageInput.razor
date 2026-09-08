@@ -1,0 +1,36 @@
+@using System.Text.Json
+
+<div class="message-input-area">
+    <input type="text"
+           class="message-input"
+           @bind="_messageText"
+           @onkeyup="HandleMessageKeyUp"
+           placeholder="Message..." />
+    <button class="send-button" @onclick="SendAsync">
+        ➜
+    </button>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnSendMessage { get; set; }
+
+    private string _messageText = "";
+
+    private async Task HandleMessageKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await SendAsync();
+        }
+    }
+
+    private async Task SendAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(_messageText))
+        {
+            await OnSendMessage.InvokeAsync(_messageText);
+            _messageText = "";
+        }
+    }
+}

@@ -1,0 +1,55 @@
+﻿@using System.Text.Json
+
+<div style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; margin-bottom: 8px;">
+        <h3 style="margin: 0; font-size: var(--font-size-small);">Server Members</h3>
+        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: var(--font-size-tiny);" @onclick="OnRefresh">
+            🔄
+        </button>
+    </div>
+
+    <div class="message-list" style="flex: 1;">
+        @if (Members.Count == 0)
+        {
+            <div style="text-align: center; color: var(--glasses-text-secondary); padding: 16px;">
+                No members loaded
+            </div>
+        }
+        else
+        {
+            @foreach (var member in Members.Take(50))
+            {
+                var user = member.GetProperty("user");
+                var username = user.GetProperty("username").GetString();
+
+                var status = "offline";
+                if (member.TryGetProperty("status", out var statusProp))
+                {
+                    status = statusProp.GetString() ?? "offline";
+                }
+
+                <div class="message-item" style="border-left-color: var(--discord-primary);">
+                    <div class="message-header">
+                        <div style="display: flex; align-items: center; gap: 4px;">
+                            <span class="user-status @status"></span>
+                            <span class="message-author">@username</span>
+                        </div>
+                    </div>
+                    <div style="font-size: var(--font-size-tiny); color: var(--glasses-text-secondary);">
+                        @(status == "online" ? "Online" : 
+                          status == "idle" ? "Idle" : 
+                          status == "dnd" ? "Do Not Disturb" : "Offline")
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<JsonElement> Members { get; set; } = new();
+
+    [Parameter]
+    public EventCallback OnRefresh { get; set; }
+}

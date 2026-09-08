@@ -1,0 +1,128 @@
+﻿@using System.Text.Json
+
+<div style="display: flex; flex-direction: column; gap: 12px; padding: 12px; height: 100%; overflow-y: auto;">
+    <!-- Header -->
+    <div style="font-size: var(--font-size-small); font-weight: 600; color: var(--glasses-text-secondary);">
+        🎙️ Voice Channels
+    </div>
+
+    @if (Channels == null || Channels.Count == 0)
+    {
+        <div style="font-size: var(--font-size-small); color: var(--glasses-text-secondary); padding: 8px;">
+            No voice channels available
+        </div>
+    }
+    else
+    {
+        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+            @foreach (var channel in Channels)
+            {
+                var channelId = channel.GetProperty("id").GetString();
+                var channelName = channel.GetProperty("name").GetString();
+                var userLimit = channel.TryGetProperty("user_limit", out var limit) ? limit.GetInt32() : 0;
+                var isSelected = SelectedChannel.HasValue && 
+                                SelectedChannel.Value.GetProperty("id").GetString() == channelId;
+                var isCurrentChannel = CurrentVoiceChannelId == channelId;
+
+                <li style="display: flex; flex-direction: column; gap: 6px; padding: 10px; 
+                          background: @(isSelected ? "var(--glasses-accent)" : (isCurrentChannel ? "var(--glasses-bg-secondary)" : "var(--glasses-bg)"));
+                          border: @(isCurrentChannel ? "2px solid var(--glasses-accent)" : "1px solid var(--glasses-border)");
+                          border-radius: 6px; cursor: pointer; transition: background 0.2s;">
+
+                    <!-- Channel header -->
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 16px;">🎤</span>
+                        <div style="flex: 1;">
+                            <div style="font-size: var(--font-size-small); font-weight: 600; color: var(--glasses-text);">
+                                @channelName
+                                @if (isCurrentChannel)
+                                {
+                                    <span style="color: var(--glasses-accent); margin-left: 4px;">✓</span>
+                                }
+                            </div>
+                            @if (userLimit > 0)
+                            {
+                                <div style="font-size: var(--font-size-tiny); color: var(--glasses-text-secondary);">
+                                    Max: @userLimit users
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Join/Leave button -->
+                    <button style="padding: 6px 12px; background: @(isCurrentChannel ? "var(--glasses-danger, #ff6b6b)" : "var(--glasses-accent)");
+                                   color: white; border: none; border-radius: 4px; font-size: var(--font-size-small);
+                                   cursor: pointer; transition: background 0.2s;"
+                            @onclick="@(async () => await OnJoinVoiceChannelAsync(channel, isCurrentChannel))">
+                        @(isCurrentChannel ? "Leave" : "Join")
+                    </button>
+                </li>
+            }
+        </ul>
+    }
+
+    <!-- Current channel info -->
+    @if (!string.IsNullOrEmpty(CurrentVoiceChannelId) && CurrentVoiceChannelName != null)
+    {
+        <div style="margin-top: 12px; padding: 12px; background: var(--glasses-bg-secondary); border-radius: 6px; border-left: 4px solid var(--glasses-accent);">
+            <div style="font-size: var(--font-size-small); font-weight: 600; color: var(--glasses-accent); margin-bottom: 8px;">
+                📡 Connected to: @CurrentVoiceChannelName
+            </div>
+            @if (VoiceChannelParticipants?.Count > 0)
+            {
+                <div style="font-size: var(--font-size-tiny); color: var(--glasses-text-secondary); margin-bottom: 6px;">
+                    @VoiceChannelParticipants.Count user(s) in channel
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    @foreach (var participant in VoiceChannelParticipants.Take(5))
+                    {
+                        var user = participant.TryGetProperty("user", out var userProp) ? userProp : new JsonElement();
+                        var userName = user.TryGetProperty("username", out var nameProp) ? nameProp.GetString() : "Unknown";
+                        <div style="font-size: var(--font-size-tiny); color: var(--glasses-text);">
+                            👤 @userName
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div style="font-size: var(--font-size-tiny); color: var(--glasses-text-secondary);">
+                    You're alone in this channel
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<JsonElement> Channels { get; set; } = new();
+
+    [Parameter]
+    public JsonElement? SelectedChannel { get; set; }
+
+    [Parameter]
+    public string? CurrentVoiceChannelId { get; set; }
+
+    [Parameter]
+    public string? CurrentVoiceChannelName { get; set; }
+
+    [Parameter]
+    public List<JsonElement>? VoiceChannelParticipants { get; set; }
+
+    [Parameter]
+    public EventCallback<JsonElement> OnChannelSelect { get; set; }
+
+    [Parameter]
+    public EventCallback<(string ChannelId, string ChannelName, bool IsJoining)> OnVoiceChannelJoin { get; set; }
+
+    private async Task OnJoinVoiceChannelAsync(JsonElement channel, bool isCurrentChannel)
+    {
+        var channelId = channel.GetProperty("id").GetString();
+        var channelName = channel.GetProperty("name").GetString();
+
+        await OnChannelSelect.InvokeAsync(channel);
+        await OnVoiceChannelJoin.InvokeAsync((channelId, channelName, !isCurrentChannel));
+    }
+}
+

@@ -1,0 +1,56 @@
+﻿@using System.Text.Json
+
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 8px; background: var(--glasses-bg-secondary); border-radius: 4px;">
+    <div style="font-size: var(--font-size-small); font-weight: 600; color: var(--glasses-text-secondary);">
+        🎙️ Voice Channels
+    </div>
+
+    @if (VoiceChannels == null || VoiceChannels.Count == 0)
+    {
+        <div style="font-size: var(--font-size-small); color: var(--glasses-text-secondary); padding: 4px;">
+            No voice channels
+        </div>
+    }
+    else
+    {
+        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px;">
+            @foreach (var channel in VoiceChannels)
+            {
+                var channelId = channel.GetProperty("id").GetString();
+                var channelName = channel.GetProperty("name").GetString();
+                var userLimit = channel.TryGetProperty("user_limit", out var limit) ? limit.GetInt32() : 0;
+                var isSelected = SelectedChannel.HasValue && 
+                                SelectedChannel.Value.GetProperty("id").GetString() == channelId;
+
+                <li style="display: flex; align-items: center; gap: 8px; padding: 6px 8px; 
+                          background: @(isSelected ? "var(--glasses-accent)" : "var(--glasses-bg)");
+                          border-radius: 4px; cursor: pointer; transition: background 0.2s;"
+                   @onclick="@(() => OnChannelSelect.InvokeAsync(channel))">
+                    <span style="font-size: 14px;">🎤</span>
+                    <div style="flex: 1;">
+                        <div style="font-size: var(--font-size-small); color: var(--glasses-text);">
+                            @channelName
+                        </div>
+                        @if (userLimit > 0)
+                        {
+                            <div style="font-size: var(--font-size-tiny); color: var(--glasses-text-secondary);">
+                                Max: @userLimit users
+                            </div>
+                        }
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<JsonElement> Channels { get; set; } = new();
+
+    [Parameter]
+    public JsonElement? SelectedChannel { get; set; }
+
+    [Parameter]
+    public EventCallback<JsonElement> OnChannelSelect { get; set; }
+}

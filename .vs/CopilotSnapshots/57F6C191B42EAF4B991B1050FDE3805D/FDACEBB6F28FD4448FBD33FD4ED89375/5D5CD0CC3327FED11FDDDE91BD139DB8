@@ -1,0 +1,15 @@
+﻿{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+
+  "```json" {
+    "Discord": {
+      "BotToken": "MTU0NjI3MjQ2NjEzNjA3MjI5Mw.GgwFnO.2IijAYqmzMSrjF6f4WYeHTaVz5duYVtRMD02XY"
+    }
+  },
+  "```"
+}
