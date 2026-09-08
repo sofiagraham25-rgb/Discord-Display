@@ -1,0 +1,173 @@
+﻿@page "/settings"
+
+<!-- Settings Component for Ray-Ban Glasses Companion -->
+
+<div class="glasses-container">
+    <!-- Header -->
+    <div class="glasses-header">
+        <div class="header-left">
+            <span>⚙️ Settings</span>
+        </div>
+        <div class="header-right">
+            <span>@DateTime.Now:hh:mm</span>
+        </div>
+    </div>
+
+    <!-- Settings Content -->
+    <div class="glasses-content">
+        <div style="padding: 8px; display: flex; flex-direction: column; gap: 16px;">
+
+            <!-- Display Settings -->
+            <div style="border: 1px solid var(--glasses-bg-secondary); padding: 8px; border-radius: 4px;">
+                <h3 style="margin: 0 0 8px 0; font-size: var(--font-size-small);">Display</h3>
+
+                <div class="form-group">
+                    <label>Font Size</label>
+                    <select @onchange="@((ChangeEventArgs e) => FontSizeMultiplier = decimal.Parse(e.Value?.ToString() ?? "1"))">
+                        <option value="0.8">Small</option>
+                        <option value="1" selected>Normal</option>
+                        <option value="1.2">Large</option>
+                        <option value="1.5">Extra Large</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Theme</label>
+                    <select @onchange="@((ChangeEventArgs e) => Theme = e.Value?.ToString() ?? "dark")">
+                        <option value="dark" selected>Dark</option>
+                        <option value="light">Light</option>
+                        <option value="high-contrast">High Contrast</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Notification Settings -->
+            <div style="border: 1px solid var(--glasses-bg-secondary); padding: 8px; border-radius: 4px;">
+                <h3 style="margin: 0 0 8px 0; font-size: var(--font-size-small);">Notifications</h3>
+
+                <div class="form-group">
+                    <label style="display: flex; gap: 8px; align-items: center; cursor: pointer;">
+                        <input type="checkbox" @bind="NotificationsEnabled" />
+                        <span>Notifications</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label style="display: flex; gap: 8px; align-items: center; cursor: pointer;">
+                        <input type="checkbox" @bind="NotificationSound" />
+                        <span>Sound</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label style="display: flex; gap: 8px; align-items: center; cursor: pointer;">
+                        <input type="checkbox" @bind="NotificationVibration" />
+                        <span>Vibration</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Behavior Settings -->
+            <div style="border: 1px solid var(--glasses-bg-secondary); padding: 8px; border-radius: 4px;">
+                <h3 style="margin: 0 0 8px 0; font-size: var(--font-size-small);">Behavior</h3>
+
+                <div class="form-group">
+                    <label>Messages to Load</label>
+                    <select @onchange="@((ChangeEventArgs e) => MessagesPerLoad = int.Parse(e.Value?.ToString() ?? "20"))">
+                        <option value="10">10</option>
+                        <option value="20" selected>20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Refresh Interval (seconds)</label>
+                    <input type="number" @bind="RefreshIntervalSeconds" min="5" max="300" />
+                </div>
+
+                <div class="form-group">
+                    <label style="display: flex; gap: 8px; align-items: center; cursor: pointer;">
+                        <input type="checkbox" @bind="ShowAvatars" />
+                        <span>Show Avatars (uses battery)</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label style="display: flex; gap: 8px; align-items: center; cursor: pointer;">
+                        <input type="checkbox" @bind="ShowTypingIndicators" />
+                        <span>Show Typing Indicators</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- About -->
+            <div style="border: 1px solid var(--glasses-bg-secondary); padding: 8px; border-radius: 4px;">
+                <h3 style="margin: 0 0 8px 0; font-size: var(--font-size-small);">About</h3>
+                <div style="font-size: var(--font-size-tiny); color: var(--glasses-text-secondary);">
+                    <div>Discord Ray-Ban Companion</div>
+                    <div>Version: 1.0.0</div>
+                    <div>.NET 10 • Blazor</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer Navigation -->
+    <div class="glasses-footer">
+        <button class="nav-button" @onclick="SaveSettings">
+            <span>💾</span>
+            <small>Save</small>
+        </button>
+        <button class="nav-button" @onclick="ResetDefaults">
+            <span>↺</span>
+            <small>Reset</small>
+        </button>
+        <button class="nav-button" @onclick="GoHome">
+            <span>🏠</span>
+            <small>Back</small>
+        </button>
+    </div>
+</div>
+
+@code {
+    // Display Settings
+    private decimal FontSizeMultiplier = 1m;
+    private string Theme = "dark";
+
+    // Notification Settings
+    private bool NotificationsEnabled = true;
+    private bool NotificationSound = true;
+    private bool NotificationVibration = false;
+
+    // Behavior Settings
+    private int MessagesPerLoad = 20;
+    private int RefreshIntervalSeconds = 5;
+    private bool ShowAvatars = false;
+    private bool ShowTypingIndicators = true;
+
+    private void SaveSettings()
+    {
+        // Save to localStorage or API
+        Console.WriteLine($"Settings saved: Font={FontSizeMultiplier}, Theme={Theme}");
+    }
+
+    private void ResetDefaults()
+    {
+        FontSizeMultiplier = 1m;
+        Theme = "dark";
+        NotificationsEnabled = true;
+        NotificationSound = true;
+        NotificationVibration = false;
+        MessagesPerLoad = 20;
+        RefreshIntervalSeconds = 5;
+        ShowAvatars = false;
+        ShowTypingIndicators = true;
+    }
+
+    private void GoHome()
+    {
+        // Navigate back to main app
+    }
+}

@@ -1,0 +1,435 @@
+﻿@page "/"
+@using Discord_web_app.Services
+@using System.Text.Json
+@inject DiscordApiService DiscordApi
+@inject DiscordBotService BotService
+@inject IConfiguration Configuration
+
+<div class="glasses-container" style="display: flex; flex-direction: column; height: 100vh;">
+    <!-- Header with status -->
+    <div class="glasses-header">
+        <div class="header-left">
+            <span class="user-status @(CurrentUserStatus)"></span>
+            <span>@(CurrentUserName ?? "Discord")</span>
+        </div>
+        <div class="header-right">
+            <span>@DateTime.Now:hh:mm</span>
+        </div>
+    </div>
+
+    <!-- Main content area -->
+    <div class="glasses-content">
+        @if (string.IsNullOrEmpty(_token))
+        {
+            <div class="auth-prompt">
+                <h2>Discord Companion</h2>
+                <p>Enter your Discord Bot Token to get started</p>
+                <div class="form-group">
+                    <input type="password" 
+                           @bind="_inputToken" 
+                           placeholder="Bot Token"
+                           @onkeyup="HandleTokenKeyUp" />
+                </div>
+                <button class="btn btn-primary" @onclick="AuthenticateAsync">Connect</button>
+            </div>
+        }
+        else if (IsLoading)
+        {
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <div class="spinner"></div>
+                <span>Loading Discord data...</span>
+            </div>
+        }
+        else if (CurrentView == "channels")
+        {
+            <ChannelView Guilds="Guilds" 
+                        SelectedGuild="SelectedGuild"
+                        SelectedChannel="SelectedChannel"
+                        Messages="CurrentMessages"
+                        OnGuildSelect="SelectGuildAsync"
+                        OnChannelSelect="SelectChannelAsync"
+                        OnSendMessage="SendMessageAsync" />
+        }
+        else if (CurrentView == "voice")
+        {
+            <VoiceChannels Channels="VoiceChannels"
+                          SelectedChannel="SelectedChannel"
+                          CurrentVoiceChannelId="CurrentVoiceChannelId"
+                          CurrentVoiceChannelName="CurrentVoiceChannelName"
+                          VoiceChannelParticipants="VoiceChannelParticipants"
+                          OnChannelSelect="SelectChannelAsync"
+                          OnVoiceChannelJoin="HandleVoiceChannelJoinAsync" />
+        }
+        else if (CurrentView == "dms")
+        {
+            <DirectMessageView PrivateChannels="PrivateChannels"
+                              SelectedChannel="SelectedDmChannel"
+                              Messages="CurrentMessages"
+                              OnChannelSelect="SelectDmChannelAsync"
+                              OnSendMessage="SendMessageAsync" />
+        }
+        else if (CurrentView == "friends")
+        {
+            <FriendsView Members="CurrentMembers"
+                        OnRefresh="LoadMembersAsync" />
+        }
+    </div>
+
+    <!-- Bottom navigation -->
+    <div class="glasses-footer">
+        <button class="nav-button @(CurrentView == "channels" ? "active" : "")"
+                @onclick="@(() => SetViewAsync("channels"))">
+            <span>📢</span>
+            <small>Channels</small>
+        </button>
+        <button class="nav-button @(CurrentView == "voice" ? "active" : "")"
+                @onclick="@(() => SetViewAsync("voice"))">
+            <span>🎙️</span>
+            <small>Voice</small>
+        </button>
+        <button class="nav-button @(CurrentView == "dms" ? "active" : "")"
+                @onclick="@(() => SetViewAsync("dms"))">
+            <span>💬</span>
+            <small>DMs</small>
+        </button>
+        <button class="nav-button @(CurrentView == "friends" ? "active" : "")"
+                @onclick="@(() => SetViewAsync("friends"))">
+            <span>👥</span>
+            <small>Friends</small>
+        </button>
+        <button class="nav-button" @onclick="DisconnectAsync">
+            <span>🔓</span>
+            <small>Logout</small>
+        </button>
+    </div>
+</div>
+
+@code {
+    private string? _token;
+    private string? _inputToken;
+    private string CurrentView = "channels";
+    private bool IsLoading = false;
+
+    private string? CurrentUserName;
+    private string CurrentUserStatus = "offline";
+
+    private List<JsonElement> Guilds = new();
+    private JsonElement? SelectedGuild;
+    private JsonElement? SelectedChannel;
+    private List<JsonElement> CurrentMessages = new();
+    private List<JsonElement> AllChannels = new();
+    private List<JsonElement> VoiceChannels = new();
+
+    private string? CurrentVoiceChannelId;
+    private string? CurrentVoiceChannelName;
+    private List<JsonElement> VoiceChannelParticipants = new();
+
+    private List<JsonElement> PrivateChannels = new();
+    private JsonElement? SelectedDmChannel;
+
+    private List<JsonElement> CurrentMembers = new();
+
+    private async Task HandleTokenKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await AuthenticateAsync();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Try to load token from configuration (User Secrets or appsettings)
+        // Try both possible key names for compatibility
+        var configToken = Configuration.GetValue<string>("bot_token") 
+                       ?? Configuration.GetValue<string>("Discord:BotToken");
+
+        if (!string.IsNullOrEmpty(configToken))
+        {
+            _token = configToken;
+            _inputToken = configToken;
+            await AuthenticateAsync();
+        }
+    }
+
+    private async Task AuthenticateAsync()
+    {
+        try
+        {
+            IsLoading = true;
+
+            // Use _inputToken if provided, otherwise use _token (for auto-login)
+            var tokenToUse = !string.IsNullOrEmpty(_inputToken) ? _inputToken : _token;
+
+            if (string.IsNullOrEmpty(tokenToUse))
+            {
+                return;
+            }
+
+            _token = tokenToUse;
+            DiscordApi.SetToken(_token);
+
+            // Validate token
+            if (!await DiscordApi.ValidateTokenAsync())
+            {
+                _token = null;
+                _inputToken = null;
+                return;
+            }
+
+            // Initialize bot service for voice
+            var botInitialized = await BotService.InitializeAsync(_token);
+            if (!botInitialized)
+            {
+                Console.WriteLine("Warning: Bot service failed to initialize, voice features may be limited");
+            }
+
+            // Load initial data
+            await LoadUserAsync();
+            await LoadGuildsAsync();
+            await LoadPrivateChannelsAsync();
+
+            _inputToken = null;
+            CurrentView = "channels";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task LoadUserAsync()
+    {
+        try
+        {
+            var user = await DiscordApi.GetCurrentUserAsync();
+            if (user.HasValue)
+            {
+                CurrentUserName = user.Value.GetProperty("username").GetString();
+                CurrentUserStatus = "online";
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading user: {ex.Message}");
+        }
+    }
+
+    private async Task LoadGuildsAsync()
+    {
+        try
+        {
+            Guilds = await DiscordApi.GetGuildsAsync();
+            if (Guilds.Count > 0)
+            {
+                await SelectGuildAsync(Guilds[0]);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading guilds: {ex.Message}");
+        }
+    }
+
+    private async Task SelectGuildAsync(JsonElement guild)
+    {
+        try
+        {
+            IsLoading = true;
+            SelectedGuild = guild;
+            var guildId = guild.GetProperty("id").GetString();
+
+            AllChannels = await DiscordApi.GetGuildChannelsAsync(guildId);
+
+            // Filter text channels only (type 0)
+            var textChannels = DiscordApi.GetTextChannels(AllChannels);
+
+            // Filter voice channels (type 2)
+            VoiceChannels = DiscordApi.GetVoiceChannels(AllChannels);
+
+            if (textChannels.Count > 0)
+            {
+                await SelectChannelAsync(textChannels[0]);
+            }
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task SelectChannelAsync(JsonElement channel)
+    {
+        try
+        {
+            IsLoading = true;
+            SelectedChannel = channel;
+            var channelId = channel.GetProperty("id").GetString();
+            CurrentMessages = await DiscordApi.GetChannelMessagesAsync(channelId);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task SelectDmChannelAsync(JsonElement channel)
+    {
+        try
+        {
+            IsLoading = true;
+            SelectedDmChannel = channel;
+            var channelId = channel.GetProperty("id").GetString();
+            CurrentMessages = await DiscordApi.GetChannelMessagesAsync(channelId);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task LoadPrivateChannelsAsync()
+    {
+        try
+        {
+            PrivateChannels = await DiscordApi.GetPrivateChannelsAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading private channels: {ex.Message}");
+        }
+    }
+
+    private async Task LoadMembersAsync()
+    {
+        try
+        {
+            if (SelectedGuild.HasValue)
+            {
+                var guildId = SelectedGuild.Value.GetProperty("id").GetString();
+                CurrentMembers = await DiscordApi.GetGuildMembersAsync(guildId);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading members: {ex.Message}");
+        }
+    }
+
+    private async Task SendMessageAsync(string content)
+    {
+        try
+        {
+            string? channelId = null;
+
+            if (CurrentView == "channels" && SelectedChannel.HasValue)
+            {
+                channelId = SelectedChannel.Value.GetProperty("id").GetString();
+            }
+            else if (CurrentView == "dms" && SelectedDmChannel.HasValue)
+            {
+                channelId = SelectedDmChannel.Value.GetProperty("id").GetString();
+            }
+
+            if (!string.IsNullOrEmpty(channelId))
+            {
+                var success = await DiscordApi.SendMessageAsync(channelId, content);
+                if (success)
+                {
+                    // Refresh messages
+                    if (CurrentView == "channels" && SelectedChannel.HasValue)
+                    {
+                        await SelectChannelAsync(SelectedChannel.Value);
+                    }
+                    else if (CurrentView == "dms" && SelectedDmChannel.HasValue)
+                    {
+                        await SelectDmChannelAsync(SelectedDmChannel.Value);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error sending message: {ex.Message}");
+        }
+    }
+
+    private void SetViewAsync(string view)
+    {
+        CurrentView = view;
+        if (view == "friends")
+        {
+            _ = LoadMembersAsync();
+        }
+    }
+
+        private void DisconnectAsync()
+        {
+            _token = null;
+            _inputToken = null;
+            SelectedGuild = null;
+            SelectedChannel = null;
+            SelectedDmChannel = null;
+            CurrentMessages.Clear();
+            Guilds.Clear();
+            PrivateChannels.Clear();
+            CurrentView = "channels";
+            CurrentVoiceChannelId = null;
+            CurrentVoiceChannelName = null;
+            VoiceChannelParticipants.Clear();
+        }
+
+        private async Task HandleVoiceChannelJoinAsync((string ChannelId, string ChannelName, bool IsJoining) joinInfo)
+        {
+            try
+            {
+                if (joinInfo.IsJoining)
+                {
+                    // Extract IDs
+                    if (!ulong.TryParse(joinInfo.ChannelId, out var channelId))
+                    {
+                        Console.WriteLine("Invalid channel ID");
+                        return;
+                    }
+
+                    if (!SelectedGuild.HasValue || !ulong.TryParse(SelectedGuild.Value.GetProperty("id").GetString(), out var guildId))
+                    {
+                        Console.WriteLine("Invalid guild ID");
+                        return;
+                    }
+
+                    // Join voice channel via bot
+                    Console.WriteLine($"Attempting to join voice channel: {joinInfo.ChannelName}");
+                    var joined = await BotService.JoinVoiceChannelAsync(guildId, channelId);
+
+                    if (joined)
+                    {
+                        CurrentVoiceChannelId = joinInfo.ChannelId;
+                        CurrentVoiceChannelName = joinInfo.ChannelName;
+
+                        // Load participants
+                        VoiceChannelParticipants = await DiscordApi.GetVoiceChannelParticipantsAsync(guildId.ToString(), joinInfo.ChannelId);
+
+                        Console.WriteLine($"Successfully joined voice channel: {joinInfo.ChannelName}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Failed to join voice channel: {joinInfo.ChannelName}");
+                    }
+                }
+                else
+                {
+                    // Leave voice channel
+                    await BotService.LeaveVoiceChannelAsync();
+                    CurrentVoiceChannelId = null;
+                    CurrentVoiceChannelName = null;
+                    VoiceChannelParticipants.Clear();
+                    Console.WriteLine($"Left voice channel: {joinInfo.ChannelName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error handling voice channel join: {ex.Message}");
+            }
+        }
+    }

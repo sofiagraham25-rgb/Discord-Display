@@ -1,0 +1,368 @@
+﻿using Discord;
+using Discord.Audio;
+using Discord.WebSocket;
+
+namespace Discord_web_app.Services
+{
+    /// <summary>
+    /// Service for managing Discord bot connections including voice channels and audio
+    /// </summary>
+    public class DiscordBotService : IAsyncDisposable
+    {
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<DiscordBotService> _logger;
+        private DiscordSocketClient? _client;
+        private string? _botToken;
+
+        // Track current voice connection
+        private IVoiceChannel? _currentVoiceChannel;
+        private IAudioClient? _currentAudioClient;
+        private AudioOutStream? _audioStream;
+        private CancellationTokenSource? _keepAliveCts;
+        private Task? _keepAliveTask;
+
+        public event Action<string>? OnVoiceChannelJoined;
+        public event Action<string>? OnVoiceChannelLeft;
+        public event Action<string>? OnConnectionStatusChanged;
+
+        public DiscordBotService(IConfiguration configuration, ILogger<DiscordBotService> logger)
+        {
+            _configuration = configuration;
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Initialize the bot with a token
+        /// </summary>
+        public async Task<bool> InitializeAsync(string botToken)
+        {
+            try
+            {
+                _botToken = botToken;
+                _logger.LogInformation("[INIT] Starting bot initialization");
+
+                var config = new DiscordSocketConfig
+                {
+                    GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildVoiceStates | GatewayIntents.AllUnprivileged,
+                    AlwaysDownloadUsers = true,
+                    MessageCacheSize = 100,
+                    LogLevel = LogSeverity.Debug,
+                    DefaultRetryMode = RetryMode.AlwaysRetry,
+                    ConnectionTimeout = 60000,
+                    HandlerTimeout = 60000,
+                };
+
+                _client = new DiscordSocketClient(config);
+
+                _client.Log += LogAsync;
+                _client.Ready += ReadyAsync;
+                _client.UserVoiceStateUpdated += UserVoiceStateUpdatedAsync;
+
+                _logger.LogInformation("[INIT] Logging in...");
+                await _client.LoginAsync(TokenType.Bot, _botToken);
+
+                _logger.LogInformation("[INIT] Starting client...");
+                await _client.StartAsync();
+
+                // Wait for ready with extended timeout
+                _logger.LogInformation("[INIT] Waiting for Connected state...");
+                int retries = 0;
+                while (_client.ConnectionState != ConnectionState.Connected && retries < 100)
+                {
+                    await Task.Delay(100);
+                    retries++;
+                    if (retries % 10 == 0)
+                    {
+                        _logger.LogInformation($"[INIT] Still waiting... ({retries * 100}ms), State: {_client.ConnectionState}");
+                    }
+                }
+
+                _logger.LogInformation($"[INIT] Connection complete after {retries * 100}ms. Final state: {_client.ConnectionState}");
+                _logger.LogInformation($"[INIT] Bot user: {_client.CurrentUser?.Username}#{_client.CurrentUser?.Discriminator}");
+                _logger.LogInformation($"[INIT] Guilds: {_client.Guilds.Count}");
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"[INIT] Error initializing bot: {ex.Message}\n{ex.StackTrace}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Join a voice channel
+        /// </summary>
+        public async Task<bool> JoinVoiceChannelAsync(ulong guildId, ulong channelId)
+        {
+            try
+            {
+                _logger.LogInformation($"[VOICE] JoinVoiceChannelAsync called: Guild={guildId}, Channel={channelId}");
+                _logger.LogInformation($"[VOICE] Current bot connection state: {_client?.ConnectionState}");
+
+                if (_client?.ConnectionState != ConnectionState.Connected)
+                {
+                    _logger.LogError($"[VOICE] Bot not connected. State: {_client?.ConnectionState}");
+                    OnConnectionStatusChanged?.Invoke("Error: Bot not connected to gateway");
+                    return false;
+                }
+
+                _logger.LogInformation($"[VOICE] Fetching guild {guildId}");
+                var guild = _client.GetGuild(guildId);
+                if (guild == null)
+                {
+                    _logger.LogError($"[VOICE] Guild {guildId} not found in client cache");
+                    _logger.LogInformation($"[VOICE] Available guilds: {string.Join(", ", _client.Guilds.Select(g => $"{g.Name}({g.Id})"))}");
+                    OnConnectionStatusChanged?.Invoke($"Error: Guild {guildId} not found");
+                    return false;
+                }
+
+                _logger.LogInformation($"[VOICE] Found guild: {guild.Name}");
+                _logger.LogInformation($"[VOICE] Fetching voice channel {channelId}");
+                var voiceChannel = guild.GetVoiceChannel(channelId);
+                if (voiceChannel == null)
+                {
+                    _logger.LogError($"[VOICE] Voice channel {channelId} not found");
+                    _logger.LogInformation($"[VOICE] Available voice channels: {string.Join(", ", guild.VoiceChannels.Select(c => $"{c.Name}({c.Id})"))}");
+                    OnConnectionStatusChanged?.Invoke($"Error: Voice channel {channelId} not found");
+                    return false;
+                }
+
+                _logger.LogInformation($"[VOICE] Found voice channel: {voiceChannel.Name}");
+                _logger.LogInformation($"[VOICE] Attempting ConnectAsync...");
+
+                // This will block if there's a protocol issue
+                var audioClient = await voiceChannel.ConnectAsync(selfDeaf: false, selfMute: true);
+
+                if (audioClient == null)
+                {
+                    _logger.LogError($"[VOICE] ConnectAsync returned null");
+                    OnConnectionStatusChanged?.Invoke("Error: Audio client is null");
+                    return false;
+                }
+
+                _logger.LogInformation($"[VOICE] Successfully obtained audio client");
+                _currentVoiceChannel = voiceChannel;
+                _currentAudioClient = audioClient;
+                _audioStream = audioClient.CreatePCMStream(AudioApplication.Music);
+
+                _logger.LogInformation($"[VOICE] Audio stream created successfully");
+                OnVoiceChannelJoined?.Invoke($"Joined {voiceChannel.Name}");
+                OnConnectionStatusChanged?.Invoke("CONNECTED");
+
+                // Start keep-alive
+                StartKeepAliveTask();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"[VOICE] Exception in JoinVoiceChannelAsync: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}");
+                OnConnectionStatusChanged?.Invoke($"Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Send audio data to the voice channel
+        /// </summary>
+        public async Task<bool> SendAudioAsync(byte[] audioData)
+        {
+            try
+            {
+                if (_audioStream == null)
+                {
+                    _logger.LogWarning("No audio stream available");
+                    return false;
+                }
+
+                await _audioStream.WriteAsync(audioData, 0, audioData.Length);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error sending audio: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Leave the current voice channel
+        /// </summary>
+        public async Task LeaveVoiceChannelAsync()
+        {
+            try
+            {
+                // Stop keep-alive task
+                _keepAliveCts?.Cancel();
+                await (_keepAliveTask ?? Task.CompletedTask);
+                _keepAliveTask = null;
+                _keepAliveCts = null;
+
+                var channelName = _currentVoiceChannel?.Name ?? "Unknown";
+
+                // Close audio stream
+                if (_audioStream != null)
+                {
+                    try
+                    {
+                        _audioStream.Dispose();
+                    }
+                    catch { }
+                    _audioStream = null;
+                }
+
+                // Stop audio client
+                if (_currentAudioClient != null)
+                {
+                    try
+                    {
+                        await _currentAudioClient.StopAsync();
+                    }
+                    catch { }
+                    _currentAudioClient = null;
+                }
+
+                if (_currentVoiceChannel != null)
+                {
+                    try
+                    {
+                        await _currentVoiceChannel.DisconnectAsync();
+                    }
+                    catch { }
+                    _currentVoiceChannel = null;
+                }
+
+                _logger.LogInformation($"Left voice channel: {channelName}");
+                OnVoiceChannelLeft?.Invoke($"Left {channelName}");
+                OnConnectionStatusChanged?.Invoke("DISCONNECTED");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error leaving voice channel: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Start keep-alive task to maintain voice connection by sending silence
+        /// </summary>
+        private void StartKeepAliveTask()
+        {
+            _keepAliveCts = new CancellationTokenSource();
+            _keepAliveTask = Task.Run(async () =>
+            {
+                try
+                {
+                    // Create silence frame (48kHz, 20ms, 2 channels)
+                    byte[] silenceFrame = new byte[3840]; // 48000 * 2 channels * 20ms / 1000 = 1920 samples * 2 bytes
+                    Array.Clear(silenceFrame, 0, silenceFrame.Length);
+
+                    while (!_keepAliveCts.Token.IsCancellationRequested)
+                    {
+                        try
+                        {
+                            if (_audioStream == null || _currentVoiceChannel == null)
+                            {
+                                break;
+                            }
+
+                            // Send silence to keep connection alive
+                            await _audioStream.WriteAsync(silenceFrame, 0, silenceFrame.Length, _keepAliveCts.Token);
+
+                            _logger.LogDebug($"Keep-alive: Sent silence frame to {_currentVoiceChannel.Name}");
+
+                            // Send every 20ms
+                            await Task.Delay(20, _keepAliveCts.Token);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            break;
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogWarning($"Error sending keep-alive frame: {ex.Message}");
+                            await Task.Delay(100, _keepAliveCts.Token);
+                        }
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    _logger.LogDebug("Keep-alive task cancelled");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in keep-alive task: {ex.Message}");
+                }
+            });
+        }
+
+        /// <summary>
+        /// Get current voice channel
+        /// </summary>
+        public IVoiceChannel? GetCurrentVoiceChannel() => _currentVoiceChannel;
+
+        /// <summary>
+        /// Get connection state
+        /// </summary>
+        public ConnectionState GetConnectionState() => _client?.ConnectionState ?? ConnectionState.Disconnected;
+
+        private async Task LogAsync(LogMessage msg)
+        {
+            _logger.LogInformation($"[Discord.Net] {msg.Source}: {msg.Message}");
+            await Task.CompletedTask;
+        }
+
+        private async Task ReadyAsync()
+        {
+            _logger.LogInformation($"Bot ready! Connected as {_client?.CurrentUser.Username}");
+            await Task.CompletedTask;
+        }
+
+        private async Task UserVoiceStateUpdatedAsync(SocketUser user, SocketVoiceState before, SocketVoiceState after)
+        {
+            // Log voice state changes
+            _logger.LogDebug($"Voice state updated for {user.Username}: {before.VoiceChannel?.Name ?? "None"} -> {after.VoiceChannel?.Name ?? "None"}");
+            await Task.CompletedTask;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            _keepAliveCts?.Cancel();
+            await (_keepAliveTask ?? Task.CompletedTask);
+            _keepAliveCts?.Dispose();
+
+            if (_audioStream != null)
+            {
+                try
+                {
+                    _audioStream.Dispose();
+                }
+                catch { }
+            }
+
+            if (_currentAudioClient != null)
+            {
+                try
+                {
+                    await _currentAudioClient.StopAsync();
+                }
+                catch { }
+            }
+
+            if (_currentVoiceChannel != null)
+            {
+                try
+                {
+                    await _currentVoiceChannel.DisconnectAsync();
+                }
+                catch { }
+            }
+
+            if (_client != null)
+            {
+                await _client.StopAsync();
+                _client.Dispose();
+            }
+        }
+    }
+}

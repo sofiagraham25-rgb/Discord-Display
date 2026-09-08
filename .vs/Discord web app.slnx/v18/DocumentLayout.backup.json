@@ -1,0 +1,552 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\clare\\source\\repos\\Discord web app\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\clare\\AppData\\Roaming\\Microsoft\\UserSecrets\\aspnet-Discord_web_app-ef4b35ce-ba69-457b-ba18-6c0d68f9cc86\\secrets.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\services\\discordbotservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:services\\discordbotservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\discord web app.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:discord web app.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\clare\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-598023555\\Home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\quick_start.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:quick_start.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\get_bot_token_guide.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:get_bot_token_guide.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\visual_summary.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:visual_summary.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\components\\pages\\discordcompanion.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:components\\pages\\discordcompanion.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\launch_now.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:launch_now.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\project_status.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:project_status.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\start_here.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:start_here.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\fixes_applied.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:fixes_applied.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\appsettings.rayban.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:appsettings.rayban.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\file_manifest.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:file_manifest.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\implementation_complete.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:implementation_complete.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\index.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:index.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\changelog.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:changelog.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\build_summary.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:build_summary.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\developer_guide.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:developer_guide.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\components\\pages\\settings.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:components\\pages\\settings.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\components\\callindicator.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:components\\callindicator.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\discord_companion_readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:discord_companion_readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\components\\messageinput.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:components\\messageinput.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\components\\friendsview.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:components\\friendsview.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\components\\directmessageview.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:components\\directmessageview.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\components\\channelview.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:components\\channelview.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\services\\discordapiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:services\\discordapiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\wwwroot\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:wwwroot\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\clare\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-1745744015\\VoiceChannels.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\clare\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-625371849\\DiscordBotService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|c:\\users\\clare\\source\\repos\\discord web app\\components\\voicechannels.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BA33D384-EA6A-216C-BB17-DD91D9A24178}|Discord web app.csproj|solutionrelative:components\\voicechannels.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DiscordBotService.cs",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\Services\\DiscordBotService.cs",
+              "RelativeDocumentMoniker": "Services\\DiscordBotService.cs",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\Services\\DiscordBotService.cs",
+              "RelativeToolTip": "Services\\DiscordBotService.cs",
+              "ViewState": "AgIAAOMAAAAAAAAAAAAAAFoBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-06T23:22:36.149Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "VoiceChannels.razor",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\VoiceChannels.razor",
+              "RelativeDocumentMoniker": "Components\\VoiceChannels.razor",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\VoiceChannels.razor",
+              "RelativeToolTip": "Components\\VoiceChannels.razor",
+              "ViewState": "AgIAAAwBAAAAAAAAAIBJwA8BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-06T23:18:00.828Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "DiscordBotService.cs",
+              "DocumentMoniker": "C:\\Users\\clare\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-625371849\\DiscordBotService.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-625371849\\DiscordBotService.cs",
+              "ToolTip": "C:\\Users\\clare\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-625371849\\DiscordBotService.cs",
+              "RelativeToolTip": "..\\..\\..\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-625371849\\DiscordBotService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-06T23:14:25.134Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "VoiceChannels.razor",
+              "DocumentMoniker": "C:\\Users\\clare\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-1745744015\\VoiceChannels.razor",
+              "RelativeDocumentMoniker": "..\\..\\..\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-1745744015\\VoiceChannels.razor",
+              "ToolTip": "C:\\Users\\clare\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-1745744015\\VoiceChannels.razor",
+              "RelativeToolTip": "..\\..\\..\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-1745744015\\VoiceChannels.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-06T23:14:21.834Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Discord web app.csproj",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\Discord web app.csproj",
+              "RelativeDocumentMoniker": "Discord web app.csproj",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\Discord web app.csproj",
+              "RelativeToolTip": "Discord web app.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-09-06T22:29:25.758Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "secrets.json",
+              "DocumentMoniker": "C:\\Users\\clare\\AppData\\Roaming\\Microsoft\\UserSecrets\\aspnet-Discord_web_app-ef4b35ce-ba69-457b-ba18-6c0d68f9cc86\\secrets.json",
+              "RelativeDocumentMoniker": "..\\..\\..\\AppData\\Roaming\\Microsoft\\UserSecrets\\aspnet-Discord_web_app-ef4b35ce-ba69-457b-ba18-6c0d68f9cc86\\secrets.json",
+              "ToolTip": "C:\\Users\\clare\\AppData\\Roaming\\Microsoft\\UserSecrets\\aspnet-Discord_web_app-ef4b35ce-ba69-457b-ba18-6c0d68f9cc86\\secrets.json",
+              "RelativeToolTip": "..\\..\\..\\AppData\\Roaming\\Microsoft\\UserSecrets\\aspnet-Discord_web_app-ef4b35ce-ba69-457b-ba18-6c0d68f9cc86\\secrets.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-09-06T21:59:38.849Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "QUICK_START.md",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\QUICK_START.md",
+              "RelativeDocumentMoniker": "QUICK_START.md",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\QUICK_START.md",
+              "RelativeToolTip": "QUICK_START.md",
+              "ViewState": "AgIAAAwAAAAAAAAAAIBJwB4AAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-09-06T21:25:11.317Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "GET_BOT_TOKEN_GUIDE.md",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\GET_BOT_TOKEN_GUIDE.md",
+              "RelativeDocumentMoniker": "GET_BOT_TOKEN_GUIDE.md",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\GET_BOT_TOKEN_GUIDE.md",
+              "RelativeToolTip": "GET_BOT_TOKEN_GUIDE.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-09-06T21:45:51.714Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "VISUAL_SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\VISUAL_SUMMARY.md",
+              "RelativeDocumentMoniker": "VISUAL_SUMMARY.md",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\VISUAL_SUMMARY.md",
+              "RelativeToolTip": "VISUAL_SUMMARY.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAANYBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-09-06T21:30:41.679Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "DiscordCompanion.razor",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\Pages\\DiscordCompanion.razor",
+              "RelativeDocumentMoniker": "Components\\Pages\\DiscordCompanion.razor",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\Pages\\DiscordCompanion.razor",
+              "RelativeToolTip": "Components\\Pages\\DiscordCompanion.razor",
+              "ViewState": "AgIAAI8AAAAAAAAAAIBJwIsAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-06T21:23:44.511Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "appsettings.Development.json",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\appsettings.Development.json",
+              "RelativeToolTip": "appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-09-06T21:39:36.968Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "LAUNCH_NOW.md",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\LAUNCH_NOW.md",
+              "RelativeDocumentMoniker": "LAUNCH_NOW.md",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\LAUNCH_NOW.md",
+              "RelativeToolTip": "LAUNCH_NOW.md",
+              "ViewState": "AgIAAHsAAAAAAAAAAIBJwEwBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-09-06T21:46:52.387Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "PROJECT_STATUS.md",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\PROJECT_STATUS.md",
+              "RelativeDocumentMoniker": "PROJECT_STATUS.md",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\PROJECT_STATUS.md",
+              "RelativeToolTip": "PROJECT_STATUS.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGQBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-09-06T21:46:23.562Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Home.razor",
+              "DocumentMoniker": "C:\\Users\\clare\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-598023555\\Home.razor",
+              "RelativeDocumentMoniker": "..\\..\\..\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-598023555\\Home.razor",
+              "ToolTip": "C:\\Users\\clare\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-598023555\\Home.razor",
+              "RelativeToolTip": "..\\..\\..\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-598023555\\Home.razor",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-06T21:51:01.684Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "START_HERE.md",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\START_HERE.md",
+              "RelativeDocumentMoniker": "START_HERE.md",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\START_HERE.md",
+              "RelativeToolTip": "START_HERE.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAALEBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-09-06T21:29:54.037Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "FIXES_APPLIED.md",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\FIXES_APPLIED.md",
+              "RelativeDocumentMoniker": "FIXES_APPLIED.md",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\FIXES_APPLIED.md",
+              "RelativeToolTip": "FIXES_APPLIED.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAK8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-09-06T21:45:26.92Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "appsettings.RayBan.json",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\appsettings.RayBan.json",
+              "RelativeDocumentMoniker": "appsettings.RayBan.json",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\appsettings.RayBan.json",
+              "RelativeToolTip": "appsettings.RayBan.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-09-06T21:24:58.252Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAC8AAAAAAAAAAABBwAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-06T21:18:02.843Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "FILE_MANIFEST.md",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\FILE_MANIFEST.md",
+              "RelativeDocumentMoniker": "FILE_MANIFEST.md",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\FILE_MANIFEST.md",
+              "RelativeToolTip": "FILE_MANIFEST.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMIBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-09-06T21:29:19.835Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "IMPLEMENTATION_COMPLETE.md",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\IMPLEMENTATION_COMPLETE.md",
+              "RelativeDocumentMoniker": "IMPLEMENTATION_COMPLETE.md",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\IMPLEMENTATION_COMPLETE.md",
+              "RelativeToolTip": "IMPLEMENTATION_COMPLETE.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMwBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-09-06T21:28:42.231Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "INDEX.md",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\INDEX.md",
+              "RelativeDocumentMoniker": "INDEX.md",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\INDEX.md",
+              "RelativeToolTip": "INDEX.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGgBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-09-06T21:28:05.193Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "CHANGELOG.md",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\CHANGELOG.md",
+              "RelativeDocumentMoniker": "CHANGELOG.md",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\CHANGELOG.md",
+              "RelativeToolTip": "CHANGELOG.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIQBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-09-06T21:27:28.571Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "BUILD_SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\BUILD_SUMMARY.md",
+              "RelativeDocumentMoniker": "BUILD_SUMMARY.md",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\BUILD_SUMMARY.md",
+              "RelativeToolTip": "BUILD_SUMMARY.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFIBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-09-06T21:26:52.268Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "DEVELOPER_GUIDE.md",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\DEVELOPER_GUIDE.md",
+              "RelativeDocumentMoniker": "DEVELOPER_GUIDE.md",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\DEVELOPER_GUIDE.md",
+              "RelativeToolTip": "DEVELOPER_GUIDE.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD4CAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-09-06T21:26:21.072Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Settings.razor",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\Pages\\Settings.razor",
+              "RelativeDocumentMoniker": "Components\\Pages\\Settings.razor",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\Pages\\Settings.razor",
+              "RelativeToolTip": "Components\\Pages\\Settings.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAK0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-06T21:25:36.117Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "CallIndicator.razor",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\CallIndicator.razor",
+              "RelativeDocumentMoniker": "Components\\CallIndicator.razor",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\CallIndicator.razor",
+              "RelativeToolTip": "Components\\CallIndicator.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-06T21:25:18.692Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "DISCORD_COMPANION_README.md",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\DISCORD_COMPANION_README.md",
+              "RelativeDocumentMoniker": "DISCORD_COMPANION_README.md",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\DISCORD_COMPANION_README.md",
+              "RelativeToolTip": "DISCORD_COMPANION_README.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-09-06T21:24:53.506Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "MessageInput.razor",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\MessageInput.razor",
+              "RelativeDocumentMoniker": "Components\\MessageInput.razor",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\MessageInput.razor",
+              "RelativeToolTip": "Components\\MessageInput.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-06T21:24:18.182Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "FriendsView.razor",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\FriendsView.razor",
+              "RelativeDocumentMoniker": "Components\\FriendsView.razor",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\FriendsView.razor",
+              "RelativeToolTip": "Components\\FriendsView.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-06T21:24:14.338Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "DirectMessageView.razor",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\DirectMessageView.razor",
+              "RelativeDocumentMoniker": "Components\\DirectMessageView.razor",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\DirectMessageView.razor",
+              "RelativeToolTip": "Components\\DirectMessageView.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-06T21:24:07.645Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "ChannelView.razor",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\ChannelView.razor",
+              "RelativeDocumentMoniker": "Components\\ChannelView.razor",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\Components\\ChannelView.razor",
+              "RelativeToolTip": "Components\\ChannelView.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-06T21:23:56.491Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "DiscordApiService.cs",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\Services\\DiscordApiService.cs",
+              "RelativeDocumentMoniker": "Services\\DiscordApiService.cs",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\Services\\DiscordApiService.cs",
+              "RelativeToolTip": "Services\\DiscordApiService.cs",
+              "ViewState": "AgIAAHwAAAAAAAAAAADwvy0BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-06T21:23:21.403Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "app.css",
+              "DocumentMoniker": "C:\\Users\\clare\\source\\repos\\Discord web app\\wwwroot\\app.css",
+              "RelativeDocumentMoniker": "wwwroot\\app.css",
+              "ToolTip": "C:\\Users\\clare\\source\\repos\\Discord web app\\wwwroot\\app.css",
+              "RelativeToolTip": "wwwroot\\app.css",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAmwC0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-09-06T21:18:10.775Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

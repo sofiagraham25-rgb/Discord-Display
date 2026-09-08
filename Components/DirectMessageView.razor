@@ -1,0 +1,100 @@
+@using System.Text.Json
+
+<div style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+    <!-- DM list and messages -->
+    <!-- DM list sidebar -->
+    <div style="width: 100%; display: flex; flex-direction: column; overflow: hidden;">
+        <div style="font-size: var(--font-size-small); font-weight: 600; padding: 4px 8px; color: var(--glasses-text-secondary); flex-shrink: 0;">
+            Direct Messages
+        </div>
+
+        <ul class="dm-list" style="flex: 1; overflow-y: auto; padding: 0 4px;">
+            @foreach (var channel in PrivateChannels)
+            {
+                var channelId = channel.GetProperty("id").GetString();
+                var isSelected = SelectedChannel.HasValue && 
+                                SelectedChannel.Value.GetProperty("id").GetString() == channelId;
+
+                // Get recipient name (for DMs)
+                string displayName = "Unknown";
+                if (channel.TryGetProperty("recipients", out var recipients))
+                {
+                    var recipientArray = recipients.EnumerateArray().FirstOrDefault();
+                    if (recipientArray.ValueKind != JsonValueKind.Undefined)
+                    {
+                        displayName = recipientArray.GetProperty("username").GetString() ?? "Unknown";
+                    }
+                }
+
+                <li class="dm-item @(isSelected ? "active" : "")" 
+                    @onclick="@(() => OnChannelSelect.InvokeAsync(channel))">
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <span>💬</span>
+                        <span>@displayName</span>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <!-- Messages and input -->
+    <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden; margin-top: 8px;">
+        <!-- Selected DM header -->
+        <div style="padding: 4px 8px; border-bottom: 1px solid var(--glasses-bg-secondary); font-size: var(--font-size-small); font-weight: 600; flex-shrink: 0;">
+            @if (SelectedChannel.HasValue)
+            {
+                var displayName = "Unknown";
+                if (SelectedChannel.Value.TryGetProperty("recipients", out var recipients))
+                {
+                    var recipientArray = recipients.EnumerateArray().FirstOrDefault();
+                    if (recipientArray.ValueKind != JsonValueKind.Undefined)
+                    {
+                        displayName = recipientArray.GetProperty("username").GetString() ?? "Unknown";
+                    }
+                }
+                <span>@displayName</span>
+            }
+        </div>
+
+        <!-- Messages -->
+        <div class="message-list" style="flex: 1;">
+            @foreach (var message in Messages)
+            {
+                var author = message.GetProperty("author");
+                var authorName = author.GetProperty("username").GetString();
+                var content = message.GetProperty("content").GetString();
+                var timestamp = message.GetProperty("timestamp").GetString();
+
+                <div class="message-item">
+                    <div class="message-header">
+                        <span class="message-author">@authorName</span>
+                        <span class="message-time">
+                            @(DateTime.Parse(timestamp ?? "").ToString("HH:mm"))
+                        </span>
+                    </div>
+                    <div class="message-content">@content</div>
+                </div>
+            }
+        </div>
+
+        <!-- Message input -->
+        <MessageInput OnSendMessage="OnSendMessage" />
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<JsonElement> PrivateChannels { get; set; } = new();
+
+    [Parameter]
+    public JsonElement? SelectedChannel { get; set; }
+
+    [Parameter]
+    public List<JsonElement> Messages { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<JsonElement> OnChannelSelect { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnSendMessage { get; set; }
+}

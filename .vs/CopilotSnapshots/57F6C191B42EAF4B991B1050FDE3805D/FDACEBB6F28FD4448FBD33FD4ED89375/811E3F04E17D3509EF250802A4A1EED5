@@ -1,0 +1,71 @@
+﻿@using System.Text.Json
+
+<!-- Voice Call Indicator Component -->
+<!-- Shows when user is in a voice/video call -->
+
+@if (IsInCall)
+{
+    <div class="call-indicator">
+        <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+            <span>@(IsVideoCall ? "📹" : "🎧")</span>
+            <div>
+                <div style="font-size: var(--font-size-small);">
+                    @CallChannelName
+                </div>
+                <div class="call-duration">
+                    @FormatDuration(CallDuration)
+                </div>
+            </div>
+        </div>
+        <div style="display: flex; gap: 4px;">
+            @if (CanMute)
+            {
+                <button class="call-button" 
+                        @onclick="@(() => IsMuted = !IsMuted)"
+                        title="@(IsMuted ? "Unmute" : "Mute")">
+                    @(IsMuted ? "🔇" : "🔊")
+                </button>
+            }
+            <button class="call-button end" @onclick="EndCall" title="End Call">
+                ☎️
+            </button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool IsInCall { get; set; } = false;
+
+    [Parameter]
+    public bool IsVideoCall { get; set; } = false;
+
+    [Parameter]
+    public string CallChannelName { get; set; } = "Voice Channel";
+
+    [Parameter]
+    public TimeSpan CallDuration { get; set; } = TimeSpan.Zero;
+
+    [Parameter]
+    public bool CanMute { get; set; } = true;
+
+    [Parameter]
+    public bool IsMuted { get; set; } = false;
+
+    [Parameter]
+    public EventCallback OnEndCall { get; set; }
+
+    private async Task EndCall()
+    {
+        await OnEndCall.InvokeAsync();
+    }
+
+    private string FormatDuration(TimeSpan duration)
+    {
+        if (duration.Hours > 0)
+        {
+            return $"{duration.Hours:D2}:{duration.Minutes:D2}:{duration.Seconds:D2}";
+        }
+        return $"{duration.Minutes:D2}:{duration.Seconds:D2}";
+    }
+}

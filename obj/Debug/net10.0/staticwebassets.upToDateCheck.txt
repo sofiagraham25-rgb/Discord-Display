@@ -1,0 +1,10 @@
+wwwroot\app.css
+Components\Account\Shared\PasskeySubmit.razor.js
+Components\Layout\ReconnectModal.razor.js
+C:\Users\clare\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.11\build\..\_framework\blazor.web.js
+C:\Users\clare\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.11\build\..\_framework\blazor.server.js
+C:\Users\clare\source\repos\Discord web app\wwwroot\app.css
+C:\Users\clare\source\repos\Discord web app\Components\Account\Shared\PasskeySubmit.razor.js
+C:\Users\clare\source\repos\Discord web app\Components\Layout\ReconnectModal.razor.js
+C:\Users\clare\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.11\_framework\blazor.web.js
+C:\Users\clare\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.11\_framework\blazor.server.js
